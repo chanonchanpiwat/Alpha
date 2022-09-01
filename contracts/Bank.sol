@@ -19,6 +19,7 @@ contract Bank is IBank {
 
     function deposit(uint _amount) external {
         require(token.allowance(msg.sender, address(this)) >= _amount,'allownance insufficient');
+        require(token.balanceOf(msg.sender) >= _amount, "insufficient balance");
         token.safeTransferFrom(msg.sender, address(this), _amount);
         emit Deposit(msg.sender, address(this), _amount);
     }
@@ -33,6 +34,7 @@ contract Bank is IBank {
 
     function repay() external {
         require(token.allowance(msg.sender, address(this)) >= deptOf[msg.sender],'allownance insufficient');
+        require(token.balanceOf(msg.sender) >= deptOf[msg.sender], "insufficient balance");
         token.safeTransferFrom(msg.sender, address(this), deptOf[msg.sender]);
         deptOf[msg.sender] = 0;
         emit Repay(address(this), msg.sender, deptOf[msg.sender]);
